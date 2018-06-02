@@ -154,14 +154,24 @@ user_input_list = user_input.split()
 print(user_input_list)
 l = len(user_input_list)
 
-# 単に見やすいから三角行列作っただけ。
-# あとPythonのリストは0から始まるのが分かりづらい。
-cky_triangle = np.tri(l)
+# 要はiとかjとかでアクセスできれば良いわけで。
+cky_triangle= [[[i,j] for j in range(l)] for i in range(l)]
 print(cky_triangle)
+for i in cky_triangle:
+    print(i)
+
+cky_triangle[0][0] = "hi"
+print(cky_triangle)
+
+for i, word in enumerate(user_input_list):
+    cky_triangle[i][i]=tag(word)
 
 cky_triangle[1,1]=2
 
 ```
+
+* [PCFG構文解析法](https://www.slideshare.net/YusukeOda1/pcfg-51424675)
+* [【python】CKY法をpythonで実装](https://hayataka2049.hatenablog.jp/entry/2018/02/19/044452)
 
 ### Earley法
 
