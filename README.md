@@ -65,14 +65,18 @@ Earley法へと突撃します。
 
 ### CKY法
 
+つくってあそぼ、的な何か。
+
 視覚的に理解できる。アルゴリズムは目で見るに限る。
 長尾真の自然言語処理もわかりやすそう。
 
 [Grammar (needs to be in CNF) ](http://lxmls.it.pt/2015/cky.html)
+[The CYK Algorithm](https://www.xarg.org/tools/cyk-algorithm/)
 
 まずは以下の入力を構文解析すると仮定する。
 
 ```python
+# ちゃんと仮想環境 'parser' を有効にしましょう。
 user_input = "I saw a girl with a telescope"
 user_input_list = user_input.split()
 print(user_input_list)
@@ -133,16 +137,28 @@ merge(('PREP','NP'))
 tag('saw')
 ```
 
-どうやら三角行列が使われているらしい。
-自分で作るための道具だてが大切。
+長尾真の『自然言語処理』は三角行列を使っている。
+行列はnumpyを使ったほうが書くのも読むのも見るのも楽。
+まずは三角行列をnumpyで生成します。
+文字列は "I saw a girl with a telescope"
+とします。
+文字列の長さは`len()`で出せるので。
+
+
 ```python
 import numpy as np
 
-# ここでinput関数を使えば本当に解析器になります。
 user_input = "I saw a girl with a telescope"
 user_input_list = user_input.split()
 print(user_input_list)
+l = len(user_input_list)
 
+# 単に見やすいから三角行列作っただけ。
+# あとPythonのリストは0から始まるのが分かりづらい。
+cky_triangle = np.tri(l)
+print(cky_triangle)
+
+cky_triangle[1,1]=2
 
 ```
 
