@@ -122,7 +122,7 @@ def merge(two_element):
     parent=[(cfg[0]) for cfg in cfg_phrase if two_element in cfg[1]]
     # cfgに則っている前提
     if len(parent) == 0:
-        return(0)
+        return([])
     else:
         return(parent)
 
@@ -130,7 +130,7 @@ def tag(lexicon):
     parent=[(cfg[0]) for cfg in cfg_lexicon if lexicon in cfg[1]]
     # cfgに則っている前提
     if len(parent) == 0:
-        return(0)
+        return([])
     else:
         return(parent)
 
@@ -148,6 +148,47 @@ tag('saw')
 
 ```python
 import numpy as np
+import itertools
+
+cfg_phrase = (
+    # 句構造規則
+    # こちらは順序対
+    ('S' ,( ('NP','VP'),)),
+    ('NP',( ('DET','N'),
+            ('NP','PP'),)),
+    ('VP',( ('V','NP') ,
+            ('V','NP'),)),
+    ('PP',( ('PREP','NP'),)),
+    )
+
+cfg_lexicon = (
+    # 辞書規則
+    # 単語の集合への関数
+    ('N'   ,('I','girl','telescope',)),
+    ('NP'  ,('I','girl','telescope',)),
+    ('V'   ,('saw',)),
+    ('VP'  ,('saw',)),
+    ('DET' ,('a',)),
+    ('PREP',('with',)),
+    )
+
+def merge(two_element):
+    pre = two_element[0]
+    post= two_element[1]
+    parent=[(cfg[0]) for cfg in cfg_phrase if two_element in cfg[1]]
+    # cfgに則っている前提
+    if len(parent) == 0:
+        return("")
+    else:
+        return(parent[0])
+
+def tag(lexicon):
+    parent=[(cfg[0]) for cfg in cfg_lexicon if lexicon in cfg[1]]
+    # cfgに則っている前提
+    if len(parent) == 0:
+        return([])
+    else:
+        return(parent)
 
 user_input = "I saw a girl with a telescope"
 user_input_list = user_input.split()
@@ -160,11 +201,30 @@ print(cky_triangle)
 for i in cky_triangle:
     print(i)
 
-cky_triangle[0][0] = "hi"
-print(cky_triangle)
-
+# 組み合わせを作る
 for i, word in enumerate(user_input_list):
     cky_triangle[i][i]=tag(word)
+
+for i in cky_triangle:
+    print(i)
+
+# これはあってる。最初から
+for d in range(0,l-2):
+    for i in range(0,l-d):
+        print('i=',i)
+        j = i + d + 1
+        print('j=',j)
+        for k in (i,j):
+            print('k=',k)
+            # A->BC in P
+            ik=cky_triangle[i][k]
+            print(ik)
+            i1j=cky_triangle[i+1][j]
+            print(i1j)
+            p = list(itertools.product(ik,i1j))
+            print("p=")
+            print(p)
+            cky_triangle[i][j] = list(map(merge,p))
 
 cky_triangle[1,1]=2
 
