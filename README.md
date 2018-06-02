@@ -72,6 +72,7 @@ Earley法へと突撃します。
 
 [Grammar (needs to be in CNF) ](http://lxmls.it.pt/2015/cky.html)
 [The CYK Algorithm](https://www.xarg.org/tools/cyk-algorithm/)
+[Chart Parsing: The CYK Algorithm](http://staff.icar.cnr.it/ruffolo/progetti/projects/09.Parsing%20CYK/presentazione%20imp--2007_inf2a_L17_slides.pdf)
 
 まずは以下の入力を構文解析すると仮定する。
 
