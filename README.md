@@ -65,6 +65,72 @@ Earley法へと突撃します。
 
 ### CKY法
 
+視覚的に理解できる。アルゴリズムは目で見るに限る。
+長尾真の自然言語処理もわかりやすそう。
+
+[Grammar (needs to be in CNF) ](http://lxmls.it.pt/2015/cky.html)
+
+まずは以下の入力を構文解析すると仮定する。
+
+```python
+user_input = "I saw a girl with a telescope"
+user_input_list = user_input.split()
+print(user_input_list)
+```
+
+非終端記号、前終端記号、終端器号の集合を句構造規則に組込む。
+文脈自由文法には辞書規則の集合と句構造規則の集合を持つ。
+辞書規則の集合は前終端記号から終端記号への関数とする。
+句構造規則を非終端記号から非終端、前終端記号の集合への関数とする。
+実際に使用する際は２つの非終端記号から親を参照できる形が嬉しい。
+
+句構造規則も辞書規則と考える。
+辞書型は[ドキュメント](https://docs.python.jp/3/tutorial/datastructures.html#dictionaries)
+によると、辞書は順序のない
+キー(key)と値(value)の集合。
+キーは一意に決まり重複はない。
+波括弧 (brace) のペア: {} は空の辞書を生成します。
+カンマで区切られた key: value のペアを波括弧ペアの間に入れると、辞書の初期値となる key: value が追加されます; この表現方法は出力時に辞書が書き出されるのと同じ方法です。
+
+```python
+
+{ {"S":("NP","VP")}
+}
+cfg = dict([
+    # 句構造規則
+    # こちらは順序対
+    ('S' ,(('NP','VP'),) ),
+    ('NP',(('DET','N'),
+           ('NP','PP'),)),
+    ('VP',(('V','NP') ,
+           ('V','NP') ,)),
+    ('PP',(('PREP','NP'),)),
+    # 辞書規則
+    # 単語の集合への関数
+    ('N',{'I','girl','telescope',}),
+    ('NP',{'I','girl','telescope',}),
+    ('V',{'saw',}),
+    ('VP',{'saw'}),
+    ('DET',{'a'}),
+    ('PREP',{'with'}),
+    ])
+
+len()
+```
+
+どうやら三角行列が使われているらしい。
+自分で作るための道具だてが大切。
+```python
+import numpy as np
+
+# ここでinput関数を使えば本当に解析器になります。
+user_input = "I saw a girl with a telescope"
+user_input_list = user_input.split()
+print(user_input_list)
+
+
+```
+
 ### Earley法
 
 ## 確率文脈自由文法
