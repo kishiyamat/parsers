@@ -195,18 +195,16 @@ user_input_list = user_input.split()
 print(user_input_list)
 l = len(user_input_list)
 
-# 要はiとかjとかでアクセスできれば良いわけで。
+# cky_triangle[i][j]とアクセスできる二重リスト
 cky_triangle= [[[i,j] for j in range(l)] for i in range(l)]
-print(cky_triangle)
-for i in cky_triangle:
-    print(i)
+# printがNoneを返すので空リストもプリントされる。
+[print(cell) for cell in cky_triangle]
 
 # 組み合わせを作る
 for i, word in enumerate(user_input_list):
     cky_triangle[i][i]=tag(word)
 
-for i in cky_triangle:
-    print(i)
+[print(cell) for cell in cky_triangle]
 
 # これはあってる。最初から
 for d in range(0,l-2):
