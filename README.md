@@ -76,6 +76,7 @@ Earley法へと突撃します。
 user_input = "I saw a girl with a telescope"
 user_input_list = user_input.split()
 print(user_input_list)
+len(user_input_list)
 ```
 
 非終端記号、前終端記号、終端器号の集合を句構造規則に組込む。
@@ -84,38 +85,52 @@ print(user_input_list)
 句構造規則を非終端記号から非終端、前終端記号の集合への関数とする。
 実際に使用する際は２つの非終端記号から親を参照できる形が嬉しい。
 
-句構造規則も辞書規則と考える。
-辞書型は[ドキュメント](https://docs.python.jp/3/tutorial/datastructures.html#dictionaries)
-によると、辞書は順序のない
-キー(key)と値(value)の集合。
-キーは一意に決まり重複はない。
-波括弧 (brace) のペア: {} は空の辞書を生成します。
-カンマで区切られた key: value のペアを波括弧ペアの間に入れると、辞書の初期値となる key: value が追加されます; この表現方法は出力時に辞書が書き出されるのと同じ方法です。
-
 ```python
-
-{ {"S":("NP","VP")}
-}
-cfg = dict([
+cfg_phrase = (
     # 句構造規則
     # こちらは順序対
-    ('S' ,(('NP','VP'),) ),
-    ('NP',(('DET','N'),
-           ('NP','PP'),)),
+    ('S' ,(('NP','VP'),)),
+    ('NP',('DET','N'),
+          ('NP','PP'),),
     ('VP',(('V','NP') ,
-           ('V','NP') ,)),
+          ('V','NP'),)),
     ('PP',(('PREP','NP'),)),
+    )
+
+cfg_lexicon = (
     # 辞書規則
     # 単語の集合への関数
-    ('N',{'I','girl','telescope',}),
-    ('NP',{'I','girl','telescope',}),
-    ('V',{'saw',}),
-    ('VP',{'saw'}),
-    ('DET',{'a'}),
-    ('PREP',{'with'}),
-    ])
+    ('N'   ,('I','girl','telescope',)),
+    ('NP'  ,('I','girl','telescope',)),
+    ('V'   ,('saw',)),
+    ('VP'  ,('saw',)),
+    ('DET' ,('a',)),
+    ('PREP',('with',)),
+    )
+```
 
-len()
+```python
+# まずは２つの構造の非終端記号から１つの非終端記号を返す関数
+def merge(two_element):
+    pre = two_element[0]
+    post= two_element[1]
+    parent=[(cfg[0]) for cfg in cfg_phrase if two_element in cfg[1]]
+    # cfgに則っている前提
+    if len(parent) == 0:
+        return(0)
+    else:
+        return(parent)
+
+def tag(lexicon):
+    parent=[(cfg[0]) for cfg in cfg_lexicon if lexicon in cfg[1]]
+    # cfgに則っている前提
+    if len(parent) == 0:
+        return(0)
+    else:
+        return(parent)
+
+merge(('PREP','NP'))
+tag('saw')
 ```
 
 どうやら三角行列が使われているらしい。
