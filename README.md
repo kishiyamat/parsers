@@ -94,12 +94,12 @@ len(user_input_list)
 cfg_phrase = (
     # 句構造規則
     # こちらは順序対
-    ('S' ,(('NP','VP'),)),
-    ('NP',('DET','N'),
-          ('NP','PP'),),
-    ('VP',(('V','NP') ,
-          ('V','NP'),)),
-    ('PP',(('PREP','NP'),)),
+    ('S' ,( ('NP','VP'),)),
+    ('NP',  ('DET','N'),
+            ('NP','PP'),),
+    ('VP',( ('V','NP') ,
+            ('V','NP'),)),
+    ('PP',( ('PREP','NP'),)),
     )
 
 cfg_lexicon = (
