@@ -201,7 +201,7 @@ n = len(user_input_list)
 
 # cky_triangle[i][j]とアクセスできる二重リスト
 # 番兵付き
-cky_triangle= [[[] for j in range(n+1)] for i in range(n+1)]
+cky_triangle= [[[] for j in range(n)] for i in range(n)]
 # printがNoneを返すので空リストもプリントされる。
 [print(cell) for cell in cky_triangle]
 
@@ -214,12 +214,17 @@ cky_triangle[2][2]
 
 # これはあってる。最初から
 # rangeは1,1なら1--1で0になる。1,2なら1.もし1,2にしたいなら1,2+1とする。
+# 見た目のforは3重
+# n=7 なら [0,1,2,3,4,5,6]
 for d in range(0,n):
-    for i in range(0,n-d+1):
+    # 階層番号。
+    for i in range(0,n-d):
+        print("now we are doing dimention",d)
+        # 多分、iを基準にしてkを増やしていく感じ。
+        # dを階層だと考えると階層が上がれば
         j = i+d
         # i \geq k < j-1
-        # j=1の時は実行されない。
-        # j=2から
+        # d=0の時i=jとなりrangeが0になり実行されない。
         for k in range(i,j):
             # A->BC in P
             ik=cky_triangle[i][k]
@@ -230,10 +235,19 @@ for d in range(0,n):
             p = list(itertools.product(ik,k1j))
             merged = list(map(merge,p))
             m = list(filter(lambda x:x !='', merged))
+            print("d=",d)
+            print("i=",i)
+            print("j=",j)
+            print("k=",k)
+            print("i k",ik)
+            print("k+1 j",k1j)
+            print("m=",m)
             cky_triangle[i][j].extend(m)
 
 [print(cell) for cell in cky_triangle]
 ```
+
+後は再帰的にノードを下り、parsedに正解をappendしてreturnすればいいのかな？
 
 * [PCFG構文解析法](https://www.slideshare.net/YusukeOda1/pcfg-51424675)
 * [【python】CKY法をpythonで実装](https://hayataka2049.hatenablog.jp/entry/2018/02/19/044452)
