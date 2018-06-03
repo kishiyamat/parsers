@@ -70,9 +70,12 @@ Earley法へと突撃します。
 視覚的に理解できる。アルゴリズムは目で見るに限る。
 長尾真の自然言語処理もわかりやすそう。
 
-[Grammar (needs to be in CNF) ](http://lxmls.it.pt/2015/cky.html)
-[The CYK Algorithm](https://www.xarg.org/tools/cyk-algorithm/)
-[Chart Parsing: The CYK Algorithm](http://staff.icar.cnr.it/ruffolo/progetti/projects/09.Parsing%20CYK/presentazione%20imp--2007_inf2a_L17_slides.pdf)
+* [Chart Parsing: The CYK Algorithm](http://staff.icar.cnr.it/ruffolo/progetti/projects/09.Parsing%20CYK/presentazione%20imp--2007_inf2a_L17_slides.pdf)
+    * 明らかにわかりやすそう。
+* [Grammar (needs to be in CNF) ](http://lxmls.it.pt/2015/cky.html)
+* [The CYK Algorithm](https://www.xarg.org/tools/cyk-algorithm/)
+* [Dor Altshuler: CKY (Cocke-Kasami-Younger) and Earley Parsing Algorithms](https://www.cs.bgu.ac.il/~michaluz/seminar/CKY1.pdf)
+    * Earley法も書いてあるけど例が数字で分かりづらい
 
 まずは以下の入力を構文解析すると仮定する。
 
@@ -95,8 +98,8 @@ cfg_phrase = (
     # 句構造規則
     # こちらは順序対
     ('S' ,( ('NP','VP'),)),
-    ('NP',  ('DET','N'),
-            ('NP','PP'),),
+    ('NP',( ('DET','N'),
+            ('NP','PP'),)),
     ('VP',( ('V','NP') ,
             ('V','NP'),)),
     ('PP',( ('PREP','NP'),)),
@@ -173,6 +176,7 @@ cfg_lexicon = (
     )
 
 def merge(two_element):
+    # ココらへんもLambdaつかって書き換えられそう
     pre = two_element[0]
     post= two_element[1]
     parent=[(cfg[0]) for cfg in cfg_phrase if two_element in cfg[1]]
@@ -190,13 +194,13 @@ def tag(lexicon):
     else:
         return(parent)
 
-user_input = "I saw a girl with a telescope"
+user_input = "BOS I saw a girl with a telescope"
 user_input_list = user_input.split()
 print(user_input_list)
-l = len(user_input_list)
+n = len(user_input_list)-1
 
 # cky_triangle[i][j]とアクセスできる二重リスト
-cky_triangle= [[[i,j] for j in range(l)] for i in range(l)]
+cky_triangle= [[[] for j in range(l)] for i in range(l)]
 # printがNoneを返すので空リストもプリントされる。
 [print(cell) for cell in cky_triangle]
 
@@ -205,26 +209,47 @@ for i, word in enumerate(user_input_list):
     cky_triangle[i][i]=tag(word)
 
 [print(cell) for cell in cky_triangle]
+cky_triangle[2][2]
 
 # これはあってる。最初から
-for d in range(0,l-2):
-    for i in range(0,l-d):
+# rangeは1,1なら1--1で0になる。1,2なら1.もし1,2にしたいなら1,2+1とする。
+for d in range(1,n-1+1):
+    for i in range(1,n-d+1):
         print('i=',i)
-        j = i + d + 1
+        j = i+d
         print('j=',j)
-        for k in (i,j):
+        # i \geq k < j-1
+        # j=1の時は実行されない。
+        # j=2から
+        for k in range(i,j-1+1):
             print('k=',k)
             # A->BC in P
             ik=cky_triangle[i][k]
+            # ik=list(filter(lambda x:x !='', ik))
             print(ik)
-            i1j=cky_triangle[i+1][j]
-            print(i1j)
-            p = list(itertools.product(ik,i1j))
+            k1j=cky_triangle[k+1][j]
+            # k1j=list(filter(lambda x:x !='', k1j))
+            print(k1j)
+            p = list(itertools.product(ik,k1j))
             print("p=")
             print(p)
-            cky_triangle[i][j] = list(map(merge,p))
+            merged = list(map(merge,p))
+            m = list(filter(lambda x:x !='', merged))
+            print("m=")
+            print(m)
+            print(i,j)
+            cky_triangle[i][j].extend(m)
 
-cky_triangle[1,1]=2
+[print(cell) for cell in cky_triangle]
+
+# [[], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
+# [[1, 0], ['N', 'NP'], ['S'], [], [], [], [], []]
+# [[2, 0], [2, 1], ['V', 'VP'], [], [], [], [], []]
+# [[3, 0], [3, 1], [3, 2], ['DET'], ['NP'], [], [], []]
+# [[4, 0], [4, 1], [4, 2], [4, 3], ['N', 'NP'], [], [], []]
+# [[5, 0], [5, 1], [5, 2], [5, 3], [5, 4], ['PREP'], [], []]
+# [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5], ['DET'], ['NP']]
+# [[7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], ['N', 'NP']]
 
 ```
 
