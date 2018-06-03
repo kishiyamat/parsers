@@ -194,13 +194,14 @@ def tag(lexicon):
     else:
         return(parent)
 
-user_input = "BOS I saw a girl with a telescope"
+user_input = "I saw a girl with a telescope"
 user_input_list = user_input.split()
 print(user_input_list)
-n = len(user_input_list)-1
+n = len(user_input_list)
 
 # cky_triangle[i][j]とアクセスできる二重リスト
-cky_triangle= [[[] for j in range(l)] for i in range(l)]
+# 番兵付き
+cky_triangle= [[[] for j in range(n+1)] for i in range(n+1)]
 # printがNoneを返すので空リストもプリントされる。
 [print(cell) for cell in cky_triangle]
 
@@ -213,44 +214,25 @@ cky_triangle[2][2]
 
 # これはあってる。最初から
 # rangeは1,1なら1--1で0になる。1,2なら1.もし1,2にしたいなら1,2+1とする。
-for d in range(1,n-1+1):
-    for i in range(1,n-d+1):
-        print('i=',i)
+for d in range(0,n):
+    for i in range(0,n-d+1):
         j = i+d
-        print('j=',j)
         # i \geq k < j-1
         # j=1の時は実行されない。
         # j=2から
-        for k in range(i,j-1+1):
-            print('k=',k)
+        for k in range(i,j):
             # A->BC in P
             ik=cky_triangle[i][k]
             # ik=list(filter(lambda x:x !='', ik))
-            print(ik)
+            # 番兵がないとここでindex errorになる。
             k1j=cky_triangle[k+1][j]
             # k1j=list(filter(lambda x:x !='', k1j))
-            print(k1j)
             p = list(itertools.product(ik,k1j))
-            print("p=")
-            print(p)
             merged = list(map(merge,p))
             m = list(filter(lambda x:x !='', merged))
-            print("m=")
-            print(m)
-            print(i,j)
             cky_triangle[i][j].extend(m)
 
 [print(cell) for cell in cky_triangle]
-
-# [[], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
-# [[1, 0], ['N', 'NP'], ['S'], [], [], [], [], []]
-# [[2, 0], [2, 1], ['V', 'VP'], [], [], [], [], []]
-# [[3, 0], [3, 1], [3, 2], ['DET'], ['NP'], [], [], []]
-# [[4, 0], [4, 1], [4, 2], [4, 3], ['N', 'NP'], [], [], []]
-# [[5, 0], [5, 1], [5, 2], [5, 3], [5, 4], ['PREP'], [], []]
-# [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5], ['DET'], ['NP']]
-# [[7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], ['N', 'NP']]
-
 ```
 
 * [PCFG構文解析法](https://www.slideshare.net/YusukeOda1/pcfg-51424675)
