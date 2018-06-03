@@ -200,32 +200,30 @@ print(user_input_list)
 n = len(user_input_list)
 
 # cky_triangle[i][j]とアクセスできる二重リスト
-# 番兵付き
 cky_triangle= [[[] for j in range(n)] for i in range(n)]
-# printがNoneを返すので空リストもプリントされる。
-[print(cell) for cell in cky_triangle]
+out = [print(cell) for cell in cky_triangle]
 
-# 組み合わせを作る
+# 階層0にタグを置く。できれば単語も格納したい。
 for i, word in enumerate(user_input_list):
     cky_triangle[i][i]=tag(word)
 
-[print(cell) for cell in cky_triangle]
-cky_triangle[2][2]
+out = [print(cell) for cell in cky_triangle]
+# cky_triangle[2][2]
 
-# これはあってる。最初から
-# rangeは1,1なら1--1で0になる。1,2なら1.もし1,2にしたいなら1,2+1とする。
-# 見た目のforは3重
-# n=7 なら [0,1,2,3,4,5,6]
-for d in range(0,n):
-    # 階層番号。
-    for i in range(0,n-d):
-        print("now we are doing dimention",d)
-        # 多分、iを基準にしてkを増やしていく感じ。
-        # dを階層だと考えると階層が上がれば
-        j = i+d
-        # i \geq k < j-1
-        # d=0の時i=jとなりrangeが0になり実行されない。
+# 階層0にはタグがあるのでスキップ。どのみちi=jとなる。
+for h in range(1,n):
+    # 階層番号をhとする。
+    for i in range(0,n-h):
+        # 非終端記号を置く土台の数をiとする。
+        # 単語数から階層を引く土台の数になる
+        j = i + h
+        # iと土台を足すとiが増えるほど次の土台に移れる。
+        # ちなみにこの $a_{ij}$ を求めるのが目標　
         for k in range(i,j):
+            # 一つの土台は２つの最大の土台の組み合わせで作れる。
+            # このkは階層が増えるほど増えていく。
+            # i \geq k < j-1
+            # h=0の時i=jとなりrangeが0になり実行されない。
             # A->BC in P
             ik=cky_triangle[i][k]
             # ik=list(filter(lambda x:x !='', ik))
@@ -235,7 +233,7 @@ for d in range(0,n):
             p = list(itertools.product(ik,k1j))
             merged = list(map(merge,p))
             m = list(filter(lambda x:x !='', merged))
-            print("d=",d)
+            print("h=",h)
             print("i=",i)
             print("j=",j)
             print("k=",k)
@@ -244,7 +242,14 @@ for d in range(0,n):
             print("m=",m)
             cky_triangle[i][j].extend(m)
 
-[print(cell) for cell in cky_triangle]
+out = [print(cell) for cell in cky_triangle]
+# [['N', 'NP'], ['S'], [], ['S'], [], [], ['S']]
+# [[], ['V', 'VP'], [], ['VP'], [], [], ['VP']]
+# [[], [], ['DET'], ['NP'], [], [], ['NP']]
+# [[], [], [], ['N', 'NP'], [], [], ['NP']]
+# [[], [], [], [], ['PREP'], [], ['PP']]
+# [[], [], [], [], [], ['DET'], ['NP']]
+# [[], [], [], [], [], [], ['N', 'NP']]
 ```
 
 後は再帰的にノードを下り、parsedに正解をappendしてreturnすればいいのかな？
