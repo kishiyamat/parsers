@@ -254,6 +254,7 @@ out = [print(cell) for cell in cky_triangle]
 
 後は再帰的にノードを下り、parsedに正解をappendしてreturnすればいいのかな？
 
+* [JAIST: 自然言語処理論Ｉ](http://www.jaist.ac.jp/~kshirai/lec/i223/04a.pdf)
 * [PCFG構文解析法](https://www.slideshare.net/YusukeOda1/pcfg-51424675)
 * [【python】CKY法をpythonで実装](https://hayataka2049.hatenablog.jp/entry/2018/02/19/044452)
 
